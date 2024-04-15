@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+             id="Definitions_1"
+             targetNamespace="http://bpmn.io/schema/bpmn"
+             exporter="Camunda Modeler"
+             exporterVersion="4.9.0">
+  <process id="approvalProcess" name="Approval Process" isExecutable="true">
+    <startEvent id="StartEvent_1" name="Start">
+      <outgoing>Flow_1</outgoing>
+    </startEvent>
+    <sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_1"/>
+    <userTask id="Task_1" name="Review Request">
+      <incoming>Flow_1</incoming>
+      <outgoing>Flow_2</outgoing>
+    </userTask>
+    <sequenceFlow id="Flow_2" sourceRef="Task_1" targetRef="Gateway_1"/>
+    <exclusiveGateway id="Gateway_1" name="Approval Gateway">
+      <incoming>Flow_2</incoming>
+      <outgoing>Flow_3</outgoing>
+      <outgoing>Flow_4</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_3" sourceRef="Gateway_1" targetRef="Task_2">
+      <conditionExpression xsi:type="tFormalExpression" language="JavaScript"><![CDATA[${approval == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_4" sourceRef="Gateway_1" targetRef="Task_3">
+      <conditionExpression xsi:type="tFormalExpression" language="JavaScript"><![CDATA[${approval == false}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="Task_2" name="Approve Request">
+      <incoming>Flow_3</incoming>
+      <outgoing>Flow_5</outgoing>
+    </userTask>
+    <sequenceFlow id="Flow_5" sourceRef="Task_2" targetRef="EndEvent_1"/>
+    <endEvent id="EndEvent_1" name="End">
+      <incoming>Flow_5</incoming>
+    </endEvent>
+    <userTask id="Task_3" name="Reject Request">
+      <incoming>Flow_4</incoming>
+      <outgoing>Flow_6</outgoing>
+    </userTask>
+    <sequenceFlow id="Flow_6" sourceRef="Task_3" targetRef="EndEvent_2"/>
+    <endEvent id="EndEvent_2" name="End">
+      <incoming>Flow_6</incoming>
+    </endEvent>
+  </process>
+</definitions>
